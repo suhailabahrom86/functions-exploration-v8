@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Functions Exploration V8 Professional</title>
+<style>
+:root{--bg:#03050a;--panel:#0b1424;--cyan:#00f7ff;--pink:#ff2bd6;--lime:#7cff6b;--gold:#ffd166;--red:#ff4d6d;--text:#f4fdff;--muted:#9eb3c6;--line:rgba(0,247,255,.25)}*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 15% 15%,rgba(0,247,255,.1),transparent 26%),radial-gradient(circle at 85% 8%,rgba(255,43,214,.09),transparent 25%),linear-gradient(180deg,#020307,#07111c 55%,#020307)}body:before{content:"";position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(0,247,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,247,255,.035) 1px,transparent 1px);background-size:34px 34px}.app{width:min(1200px,95vw);margin:auto;padding:18px 0 35px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.logo{font-size:clamp(1.4rem,3.5vw,2.7rem);font-weight:900;text-transform:uppercase;letter-spacing:.07em;text-shadow:0 0 16px rgba(0,247,255,.65)}.logo span{color:var(--cyan)}.screen{display:none}.screen.active{display:block}.panel{background:linear-gradient(145deg,rgba(13,23,41,.97),rgba(5,9,17,.97));border:1px solid var(--line);border-radius:20px;box-shadow:0 0 18px rgba(0,247,255,.22),0 0 38px rgba(255,43,214,.1);padding:clamp(17px,3vw,31px)}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center;min-height:73vh}.hero h1{font-size:clamp(2.2rem,6vw,5rem);line-height:1;margin:.15em 0}.hero h1 span{color:var(--cyan)}.hero p,.muted{color:var(--muted);line-height:1.65}.chip{display:inline-flex;padding:7px 11px;border:1px solid rgba(255,209,102,.35);background:rgba(255,209,102,.08);color:var(--gold);border-radius:999px;font-size:.78rem;font-weight:800}.features{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}.feature{padding:13px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(255,255,255,.025)}.feature b{display:block;color:var(--cyan)}.startcard{padding:22px;border:1px solid rgba(255,43,214,.28);border-radius:18px;background:rgba(0,0,0,.2)}label{display:block;color:var(--muted);font-weight:700;margin-bottom:7px}input[type=text]{width:100%;padding:14px;border-radius:11px;border:1px solid rgba(0,247,255,.35);background:#040913;color:#fff;outline:none}.btn{border:1px solid currentColor;background:transparent;color:var(--cyan);padding:12px 17px;border-radius:11px;font-weight:900;text-transform:uppercase;cursor:pointer}.btn.primary{background:var(--cyan);color:#021014}.btn.pink{background:var(--pink);color:#170011}.btn:disabled{opacity:.4;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.hud{display:grid;grid-template-columns:1.2fr .7fr .7fr .7fr .85fr .8fr;gap:9px;margin-bottom:12px}.hudbox{padding:11px 13px;border:1px solid rgba(0,247,255,.2);border-radius:12px;background:rgba(4,10,20,.9)}.hudbox small{display:block;color:var(--muted);font-size:.69rem;text-transform:uppercase}.hudbox strong{display:block;margin-top:3px}.hearts{color:var(--red);letter-spacing:.12em}.timer.low{color:var(--red)}.progresswrap{height:9px;background:#030712;border-radius:999px;overflow:hidden;margin-bottom:14px}.progress{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink))}.grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px}.question{font-size:clamp(1.18rem,2.4vw,1.7rem);line-height:1.45;margin:21px 0}.math{font-family:'Cambria Math','STIX Two Math','Times New Roman',serif;letter-spacing:.015em;word-spacing:.08em}.canvaswrap{display:none;margin-bottom:17px;padding:10px;border-radius:14px;border:1px solid rgba(0,247,255,.25);background:#fbfdff}.canvaswrap.show{display:block}canvas{display:block;width:100%;height:auto}.options{display:grid;gap:10px}.option{display:flex;width:100%;text-align:left;color:var(--text);font:inherit;gap:10px;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.025);cursor:pointer}.option.selected{border-color:var(--cyan)}.option.correct{border-color:var(--lime);background:rgba(124,255,107,.08)}.option.wrong{border-color:var(--red);background:rgba(255,77,109,.08)}.feedback{display:none;margin-top:14px;padding:13px 15px;border-left:4px solid var(--cyan);border-radius:10px;background:rgba(0,247,255,.06);line-height:1.5}.feedback.show{display:block}.feedback.good{border-color:var(--lime)}.feedback.bad{border-color:var(--red)}.mission{padding:10px;border:1px solid rgba(255,255,255,.07);border-radius:11px;margin-bottom:9px}.mission .r{display:flex;justify-content:space-between;gap:8px}.mini{height:6px;background:#030712;border-radius:99px;overflow:hidden;margin-top:7px}.mini i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink))}.resultgrid{display:grid;grid-template-columns:1fr .95fr;gap:16px}.ring{width:185px;height:185px;border-radius:50%;margin:17px auto;display:grid;place-items:center;position:relative;background:conic-gradient(var(--cyan) 0deg,var(--pink) 0deg,#12192a 0deg)}.ring:after{content:"";position:absolute;inset:14px;border-radius:50%;background:#07101c}.ring div{z-index:1;text-align:center}.ring strong{display:block;font-size:2.4rem;color:var(--cyan)}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.stat{padding:12px;text-align:center;border:1px solid rgba(255,255,255,.08);border-radius:11px}.stat b{display:block;color:var(--cyan);font-size:1.25rem}table{width:100%;border-collapse:collapse}th,td{padding:10px 7px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}th{color:var(--cyan);font-size:.78rem}td{color:var(--muted)}@media(max-width:920px){.hero,.grid,.resultgrid{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.features{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.actions{display:grid}.btn{width:100%}}
+
+.teacher-modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:100;padding:18px}
+.teacher-modal.show{display:flex}
+.teacher-box{width:min(1100px,96vw);max-height:92vh;overflow:auto;background:linear-gradient(145deg,#0b1424,#050910);border:1px solid rgba(0,247,255,.35);border-radius:18px;box-shadow:0 0 35px rgba(0,247,255,.24);padding:20px}
+.teacher-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.teacher-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+.teacher-stat{padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03);text-align:center}
+.teacher-stat b{display:block;color:var(--cyan);font-size:1.3rem}.teacher-stat small{color:var(--muted)}
+.live-table-wrap{overflow:auto}
+.live-badge{display:inline-block;padding:3px 7px;border-radius:999px;font-size:.72rem;font-weight:800}
+.live-active{background:rgba(124,255,107,.12);color:var(--lime)}
+.live-finished{background:rgba(0,247,255,.12);color:var(--cyan)}
+.live-idle{background:rgba(255,209,102,.12);color:var(--gold)}
+@media(max-width:760px){.teacher-grid{grid-template-columns:repeat(2,1fr)}}
+
+</style></head><body><main class="app"><div class="top"><div class="logo">Functions <span>Exploration V7.1</span></div><div class="actions" style="margin:0"><span id="cloudStatus" class="chip">Checking cloud…</span><button id="teacherBtn" class="btn">📊 Teacher Monitor</button><button id="full" class="btn">Fullscreen</button></div></div>
+<section id="start" class="screen active"><div class="panel hero"><div><span class="chip">MTCF 0114 • Chapter 2 • Syllabus-aligned</span><h1>Explore the <span>Function Grid</span></h1><p>Each participant receives a different random set of 15 questions selected from a bank of 100 questions.</p><div class="features"><div class="feature"><b>100-question bank</b><span class="muted">Balanced across four subtopics</span></div><div class="feature"><b>15 per session</b><span class="muted">Randomised for every attempt</span></div><div class="feature"><b>Clear graphs</b><span class="muted">Numbered x- and y-axes</span></div><div class="feature"><b>Speed Stars</b><span class="muted">Earn up to 3 stars for fast correct answers</span></div></div></div><div class="startcard"><label for="name">Player name / matric number</label><input id="name" type="text" maxlength="30" placeholder="e.g. 2612345"><div class="actions"><button id="startBtn" class="btn primary">Start Mission</button><button id="clearBtn" class="btn">Clear Leaderboard</button></div></div></div></section>
+<section id="game" class="screen"><div class="hud"><div class="hudbox"><small>Player</small><strong id="hp"></strong></div><div class="hudbox"><small>Question</small><strong id="hq"></strong></div><div class="hudbox"><small>Score</small><strong id="hs"></strong></div><div class="hudbox"><small>Stars</small><strong id="hst" style="color:var(--gold)"></strong></div><div class="hudbox"><small>Lives</small><strong id="hl" class="hearts"></strong></div><div class="hudbox"><small>Time</small><strong id="ht" class="timer"></strong></div></div><div class="progresswrap"><div id="prog" class="progress"></div></div><div class="grid"><section class="panel"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span id="topic" class="chip"></span><span id="diff" class="muted"></span></div><div id="qtext" class="question"></div><div id="canvasWrap" class="canvaswrap"><canvas id="graph" width="900" height="480"></canvas></div><div id="opts" class="options"></div><div id="fb" class="feedback"></div><div class="actions"><button id="submit" class="btn primary" disabled>Lock Answer</button><button id="next" class="btn pink" style="display:none">Next Question</button></div></section><aside class="panel"><h3 style="color:var(--cyan);margin-top:0">Mission Tracker</h3><div id="tracker"></div>
+    <div class="mission"><b style="color:var(--gold)">Speed Star Guide</b>
+    <div class="muted" style="margin-top:7px">15–20 seconds left: ⭐⭐⭐</div>
+    <div class="muted">10–14 seconds left: ⭐⭐</div>
+    <div class="muted">0–9 seconds left: ⭐</div></div></aside></div></section>
+<section id="result" class="screen"><div class="resultgrid"><section class="panel"><span class="chip">Mission Complete</span><div id="ring" class="ring"><div><strong id="pct">0%</strong><span class="muted">Accuracy</span></div></div><p id="msg" class="muted" style="text-align:center"></p><div class="stats"><div class="stat"><b id="fs"></b><small>Points</small></div><div class="stat"><b id="fc"></b><small>Correct</small></div><div class="stat"><b id="fl"></b><small>Lives</small></div><div class="stat"><b id="fq"></b><small>Question bank</small></div><div class="stat"><b id="fst"></b><small>Stars</small></div><div class="stat"><b id="ftime"></b><small>Total time</small></div></div><div class="actions"><button id="again" class="btn primary">Play Again</button><button id="home" class="btn">Home</button></div></section><section class="panel"><h3 style="color:var(--cyan);margin-top:0">Class Leaderboard</h3><p class="muted">Ranking: highest score first. For tied scores, the faster total time ranks higher.</p><div id="board"></div></section></div></section></main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+const topics=["2.1 Functions","2.2 Graphs of Functions","2.3 Transformations","2.4 One-to-One & Inverses"];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=n=>Number.isInteger(n)?String(n):String(Number(n.toFixed(2)));
+const signedTerm=n=>n>0?`+${fmt(n)}`:n<0?`−${fmt(Math.abs(n))}`:"";
+const shiftedX=h=>h>0?`x−${fmt(h)}`:h<0?`x+${fmt(Math.abs(h))}`:"x";
+const shiftWords=h=>h>0?`right ${fmt(h)}`:h<0?`left ${fmt(Math.abs(h))}`:"no horizontal shift";
+const cleanMathText=s=>String(s)
+  .replace(/−\s*−\s*(\d+(?:\.\d+)?)/g,"+$1")
+  .replace(/\+\s*−\s*(\d+(?:\.\d+)?)/g,"−$1")
+  .replace(/\+\s*-/g,"−")
+  .replace(/\(x−0\)/g,"x")
+  .replace(/\(x\+0\)/g,"x")
+  .replace(/\+0(?=\D|$)/g,"")
+  .replace(/−0(?=\D|$)/g,"");
+function buildBank(){
+ const b=[];
+ const add=(topic,difficulty,q,o,a,e,graph=null)=>b.push({
+   id:`Q${String(b.length+1).padStart(3,"0")}`,topic,difficulty,q,o,a,e,graph
+ });
+ const uniqueOptions=(correct,distractors)=>{
+   const arr=[String(correct),...distractors.map(String)];
+   const out=[];
+   for(const x of arr){if(!out.includes(x))out.push(x)}
+   const fillers=["None of these","No real value","All real numbers","Undefined"];
+   for(const f of fillers){if(out.length<4&&!out.includes(f))out.push(f)}
+   return out.slice(0,4);
+ };
+ const addShuffled=(topic,difficulty,q,correct,distractors,e,graph=null)=>{
+   const opts=shuffle(uniqueOptions(correct,distractors));
+   add(topic,difficulty,q,opts,opts.indexOf(String(correct)),e,graph);
+ };
+
+ // ============================================================
+ // 2.1 FUNCTIONS — 25 questions
+ // Syllabus: definition, notation, function test, evaluation,
+ // domain/range, basic graphs, and algebraic domains.
+ // ============================================================
+ add(topics[0],"Foundation",
+   'Which statement correctly defines a function <span class="math">f:A→B</span>?',
+   ["Every element of A is mapped to exactly one element of B.","Every element of B must be mapped from exactly one element of A.","One input may have two different outputs.","Every relation is a function."],0,
+   "A function assigns each input in its domain to exactly one output.");
+
+ add(topics[0],"Foundation",
+   'Which notation means “the value of the function f at x”?',
+   ["f(x)","fx","x(f)","f÷x"],0,
+   "The standard function notation is f(x).");
+
+ const relations=[
+   ["{(1,2),(2,3),(3,4)}","{(1,2),(1,5),(3,4)}","The input 1 has two outputs."],
+   ["{(-2,0),(0,1),(2,4)}","{(-2,0),(0,1),(0,4)}","The input 0 has two outputs."],
+   ["{(3,1),(4,1),(5,1)}","{(3,1),(4,2),(3,5)}","The input 3 has two outputs."]
+ ];
+ relations.forEach(r=>add(topics[0],"Foundation","Which relation is not a function?",
+   [r[0],r[1],"{(-1,2),(0,2),(1,2)}","{(2,5),(3,6),(4,7)}"],1,r[2]));
+
+ const evals=[
+   [2,-3,1,-2],[3,2,-4,1],[-1,4,5,3],[4,-1,2,0],[1,-6,8,2]
+ ];
+ evals.forEach(([a,c,d,x])=>{
+   const ans=a*x*x+c*x+d;
+   addShuffled(topics[0],"Intermediate",
+     `Let <span class="math">f(x)=${a}x²${signedTerm(c)}x${signedTerm(d)}</span>. Find <span class="math">f(${x})</span>.`,
+     fmt(ans),[fmt(ans+2),fmt(ans-2),fmt(-ans)],
+     `Substitute x=${x} into the function. The value is ${ans}.`);
+ });
+
+ const rationalDomains=[
+   {den:"(x−2)(x+1)",ex:"2 and −1"},
+   {den:"(x+3)(x−1)",ex:"−3 and 1"},
+   {den:"x(x−4)",ex:"0 and 4"},
+   {den:"(x+2)(x−5)",ex:"−2 and 5"}
+ ];
+ rationalDomains.forEach(d=>add(topics[0],"Intermediate",
+   `Find the domain of <span class="math">f(x)=3/${d.den}</span>.`,
+   [`All real numbers except ${d.ex}`,"All real numbers","x≥0","x>0"],0,
+   `A rational function is undefined when its denominator is zero. Exclude ${d.ex}.`));
+
+ const radicalDomains=[
+   {expr:"√(x−3)",ans:"[3,∞)",why:"x−3≥0"},
+   {expr:"√(x+2)",ans:"[−2,∞)",why:"x+2≥0"},
+   {expr:"√((x−1)(x−4))",ans:"(−∞,1] ∪ [4,∞)",why:"(x−1)(x−4)≥0"},
+   {expr:"√((x+3)(x−2))",ans:"(−∞,−3] ∪ [2,∞)",why:"(x+3)(x−2)≥0"}
+ ];
+ radicalDomains.forEach(d=>add(topics[0],"Advanced",
+   `Find the domain of <span class="math">f(x)=${d.expr}</span>.`,
+   [d.ans,"All real numbers","[0,∞)","(−∞,0]"],0,
+   `For a square root, the radicand must be non-negative: ${d.why}.`));
+
+ const rootDenDomains=[
+   {expr:"5/√(x−1)",ans:"(1,∞)",why:"x−1>0"},
+   {expr:"2/√(x+4)",ans:"(−4,∞)",why:"x+4>0"},
+   {expr:"7/√(x²−9)",ans:"(−∞,−3) ∪ (3,∞)",why:"x²−9>0"}
+ ];
+ rootDenDomains.forEach(d=>add(topics[0],"Advanced",
+   `Find the domain of <span class="math">f(x)=${d.expr}</span>.`,
+   [d.ans,"[0,∞)","All real numbers","The radicand may equal zero"],0,
+   `A square root in the denominator must be strictly positive: ${d.why}.`));
+
+ const basicRanges=[
+   ["f(x)=x²","[0,∞)"],
+   ["f(x)=|x|","[0,∞)"],
+   ["f(x)=√x","[0,∞)"],
+   ["f(x)=x³","(−∞,∞)"]
+ ];
+ basicRanges.forEach(([fn,ans])=>add(topics[0],"Foundation",
+   `State the range of the basic function <span class="math">${fn}</span>.`,
+   [ans,"(−∞,∞)","(−∞,0]","(0,∞)"],0,
+   `The range of ${fn} is ${ans}.`));
+
+ // ============================================================
+ // 2.2 GRAPHS OF FUNCTIONS — 25 questions
+ // Syllabus: basic graphs, vertical line test, piecewise graphs,
+ // equations, domain and range from graphs.
+ // ============================================================
+ add(topics[1],"Foundation",
+   "Which test determines whether a graph represents a function of x?",
+   ["Horizontal Line Test","Vertical Line Test","Gradient Test","Intercept Test"],1,
+   "A graph represents a function when every vertical line meets it at most once.",
+   {type:"vertical",expr:"x*x/2",label:"y=x²/2",xMin:-5,xMax:5,yMin:-1,yMax:8});
+
+ const graphRanges=[
+   ["x*x","y=x²",-4,4,-1,10,"[0,∞)"],
+   ["-x*x+4","y=−x²+4",-4,4,-8,6,"(−∞,4]"],
+   ["Math.abs(x)","y=|x|",-5,5,-1,6,"[0,∞)"],
+   ["Math.sqrt(x)","y=√x",-1,9,-1,4,"[0,∞)"],
+   ["1/x","y=1/x",-6,6,-6,6,"(−∞,0) ∪ (0,∞)"]
+ ];
+ graphRanges.forEach(g=>add(topics[1],"Foundation",
+   `Refer to the graph of <span class="math">${g[1]}</span>. What is its range?`,
+   [g[6],"All real numbers","[0,∞)","(−∞,0]"],0,
+   `Read all possible y-values from the graph. The range is ${g[6]}.`,
+   {type:g[0]==="1/x"?"asymptote":"function",expr:g[0],label:g[1],v:0,xMin:g[2],xMax:g[3],yMin:g[4],yMax:g[5]}));
+
+ const graphDomains=[
+   ["Math.sqrt(x-2)","y=√(x−2)",0,10,-1,4,"[2,∞)"],
+   ["Math.sqrt(x+3)","y=√(x+3)",-5,7,-1,4,"[−3,∞)"],
+   ["1/(x-2)","y=1/(x−2)",-4,8,-6,6,"All real numbers except 2"],
+   ["1/(x+1)","y=1/(x+1)",-7,5,-6,6,"All real numbers except −1"],
+   ["Math.abs(x-4)","y=|x−4|",-2,10,-1,8,"All real numbers"]
+ ];
+ graphDomains.forEach(g=>add(topics[1],"Intermediate",
+   `Refer to the graph of <span class="math">${g[1]}</span>. What is its domain?`,
+   [g[6],"[0,∞)","All real numbers except 0","(−∞,0]"],0,
+   `Read all possible x-values from the graph. The domain is ${g[6]}.`,
+   {type:g[0].includes("1/")?"asymptote":"function",expr:g[0],label:g[1],v:g[0].includes("-2")?2:g[0].includes("+1")?-1:0,xMin:g[2],xMax:g[3],yMin:g[4],yMax:g[5]}));
+
+ const piecewise=[
+   {q:"f(x)=x+2 for x<0, and f(x)=x² for x≥0",x:-2,ans:"0",why:"Use x+2 because −2<0."},
+   {q:"f(x)=−1 for x≤−2, and f(x)=|x| for x>−2",x:-3,ans:"−1",why:"Use the constant rule because −3≤−2."},
+   {q:"f(x)=x²−1 for x<1, and f(x)=2x+1 for x≥1",x:2,ans:"5",why:"Use 2x+1 because 2≥1."},
+   {q:"f(x)=3 for x<2, and f(x)=x−1 for x≥2",x:4,ans:"3",why:"Use x−1 because 4≥2."},
+   {q:"f(x)=|x+1| for x<1, and f(x)=x² for x≥1",x:0,ans:"1",why:"Use |x+1| because 0<1."}
+ ];
+ piecewise.forEach(p=>addShuffled(topics[1],"Intermediate",
+   `For the piecewise-defined function <span class="math">${p.q}</span>, find <span class="math">f(${p.x})</span>.`,
+   p.ans,[String(Number(p.ans)+1),String(Number(p.ans)-1),String(-Number(p.ans))],
+   p.why));
+
+ const basicIdentification=[
+   ["A straight horizontal line","constant function"],
+   ["A V-shaped graph","absolute value function"],
+   ["An S-shaped graph through the origin","cubic function"],
+   ["A curve beginning at the origin and increasing to the right","square root function"],
+   ["Two branches with axes as asymptotes","reciprocal function"]
+ ];
+ basicIdentification.forEach(([desc,ans])=>add(topics[1],"Foundation",
+   `Which basic function has this graph description: <b>${desc}</b>?`,
+   [ans,"quadratic function","linear function","cubic root function"],0,
+   `This is the standard shape of the ${ans}.`));
+
+ const graphEquations=[
+   {desc:"a V-shape with vertex at (2,0)",ans:"y=|x−2|"},
+   {desc:"an upward parabola with vertex at (0,3)",ans:"y=x²+3"},
+   {desc:"a square-root graph beginning at (−1,0)",ans:"y=√(x+1)"},
+   {desc:"a reciprocal graph with vertical asymptote x=3",ans:"y=1/(x−3)"}
+ ];
+ graphEquations.forEach(g=>add(topics[1],"Advanced",
+   `Choose the equation for ${g.desc}.`,
+   [g.ans,"y=x²","y=|x|","y=1/x"],0,
+   `The defining feature identifies the equation ${g.ans}.`));
+
+ // ============================================================
+ // 2.3 TRANSFORMATIONS OF FUNCTIONS — 25 questions
+ // Syllabus: shifting, stretching, compression, reflection;
+ // equation, domain and range; maximum four transformations.
+ // ============================================================
+ const transforms=[
+   ["f(x−4)","shift 4 units right"],
+   ["f(x+3)","shift 3 units left"],
+   ["f(x)+5","shift 5 units upwards"],
+   ["f(x)−2","shift 2 units downwards"],
+   ["−f(x)","reflection in the x-axis"],
+   ["f(−x)","reflection in the y-axis"],
+   ["2f(x)","vertical stretch by factor 2"],
+   ["0.5f(x)","vertical compression by factor 1/2"],
+   ["f(2x)","horizontal compression by factor 1/2"],
+   ["f(x/3)","horizontal stretch by factor 3"]
+ ];
+ transforms.forEach(t=>addShuffled(topics[2],"Foundation",
+   `What transformation changes <span class="math">y=f(x)</span> into <span class="math">y=${t[0]}</span>?`,
+   t[1],["shift 2 units right","reflection in the y-axis","vertical stretch by factor 3"],
+   `${t[0]} produces a ${t[1]}.`));
+
+ const vertices=[
+   {a:2,h:-2,k:3},{a:-1,h:1,k:4},{a:3,h:2,k:-1},{a:-2,h:-1,k:-3},{a:1,h:4,k:2}
+ ];
+ vertices.forEach(v=>{
+   const eq=`y=${v.a}(${shiftedX(v.h)})²${signedTerm(v.k)}`;
+   const ans=`(${v.h}, ${v.k})`;
+   addShuffled(topics[2],"Intermediate",
+     `Find the vertex of <span class="math">${eq}</span>.`,
+     ans,[`(${-v.h}, ${v.k})`,`(${v.h}, ${-v.k})`,`(${-v.h}, ${-v.k})`],
+     `In y=a(x−h)²+k, the vertex is (h,k)=(${v.h},${v.k}).`,
+     {type:"function",expr:`${v.a}*(x-(${v.h}))*(x-(${v.h}))+(${v.k})`,label:eq,xMin:v.h-4,xMax:v.h+4,yMin:v.k-10,yMax:v.k+10});
+ });
+
+ const transformedEquations=[
+   {base:"y=x²",steps:"shift left 2 units and up 3 units",ans:"y=(x+2)²+3"},
+   {base:"y=|x|",steps:"shift right 1 unit and down 4 units",ans:"y=|x−1|−4"},
+   {base:"y=√x",steps:"shift right 3 units and vertically stretch by factor 2",ans:"y=2√(x−3)"},
+   {base:"y=1/x",steps:"shift left 2 units and up 1 unit",ans:"y=1/(x+2)+1"},
+   {base:"y=x²",steps:"reflect in the x-axis, shift right 2 units and up 5 units",ans:"y=−(x−2)²+5"}
+ ];
+ transformedEquations.forEach(t=>add(topics[2],"Advanced",
+   `Starting from <span class="math">${t.base}</span>, ${t.steps}. Which equation results?`,
+   [t.ans,t.base,"y=f(x)+1","y=f(−x)"],0,
+   `Apply horizontal changes inside the function and vertical changes outside it.`));
+
+ const transformedDR=[
+   {eq:"y=(x−2)²+3",domain:"(−∞,∞)",range:"[3,∞)"},
+   {eq:"y=−|x+1|+4",domain:"(−∞,∞)",range:"(−∞,4]"},
+   {eq:"y=√(x−5)+2",domain:"[5,∞)",range:"[2,∞)"},
+   {eq:"y=1/(x−3)+2",domain:"All real numbers except 3",range:"All real numbers except 2"},
+   {eq:"y=2|x|−1",domain:"(−∞,∞)",range:"[−1,∞)"}
+ ];
+ transformedDR.forEach(t=>add(topics[2],"Advanced",
+   `Determine the domain and range of <span class="math">${t.eq}</span>.`,
+   [`Domain: ${t.domain}; Range: ${t.range}`,
+    "Domain: [0,∞); Range: [0,∞)",
+    "Domain: all real numbers; Range: all real numbers",
+    "Domain: x≠0; Range: y≠0"],0,
+   `The correct domain is ${t.domain} and the correct range is ${t.range}.`));
+
+ // ============================================================
+ // 2.4 ONE-TO-ONE FUNCTIONS AND INVERSES — 25 questions
+ // Syllabus: one-to-one algebraically/graphically, inverse,
+ // inverse graphs, and domains/ranges.
+ // ============================================================
+ add(topics[3],"Foundation",
+   "Which test determines graphically whether a function is one-to-one?",
+   ["Vertical Line Test","Horizontal Line Test","Intercept Test","Gradient Test"],1,
+   "A one-to-one function passes the Horizontal Line Test.",
+   {type:"horizontal",expr:"x+1",label:"y=x+1",xMin:-5,xMax:5,yMin:-5,yMax:7});
+
+ add(topics[3],"Foundation",
+   "The graphs of f and f⁻¹ are reflections in which line?",
+   ["y=0","x=0","y=x","y=−x"],2,
+   "A function and its inverse are symmetric about y=x.",
+   {type:"inverse",m:1,c:-3,xMin:-6,xMax:6,yMin:-6,yMax:6});
+
+ add(topics[3],"Foundation",
+   'If <span class="math">(a,b)</span> lies on f, which point lies on <span class="math">f⁻¹</span>?',
+   ["(a,b)","(−a,b)","(b,a)","(−b,−a)"],2,
+   "For an inverse, the input and output coordinates are interchanged.");
+
+ const oneToOne=[
+   ["f(x)=x³","Yes"],
+   ["f(x)=x² on ℝ","No"],
+   ["f(x)=2x−5","Yes"],
+   ["f(x)=|x|","No"],
+   ["f(x)=√x","Yes"],
+   ["f(x)=x² for x≥0","Yes"]
+ ];
+ oneToOne.forEach(([fn,ans])=>add(topics[3],"Intermediate",
+   `Is <span class="math">${fn}</span> one-to-one on the stated domain?`,
+   ["Yes","No","It is not a function","Only at x=0"],ans==="Yes"?0:1,
+   ans==="Yes"?"Different inputs give different outputs on the stated domain.":"Different inputs can produce the same output, so it is not one-to-one."));
+
+ const linearInv=[
+   {m:2,c:3},{m:3,c:-4},{m:-2,c:5},{m:4,c:1},{m:-3,c:-2},{m:5,c:-1}
+ ];
+ linearInv.forEach(v=>{
+   const ans=`(x${signedTerm(-v.c)})/${v.m}`;
+   addShuffled(topics[3],"Intermediate",
+     `Find the inverse of <span class="math">f(x)=${v.m}x${signedTerm(v.c)}</span>.`,
+     ans,[`${v.m}x${signedTerm(v.c)}`,`(x${signedTerm(v.c)})/${v.m}`,`1/(${v.m}x${signedTerm(v.c)})`],
+     `Interchange x and y, then solve for y. The inverse is f⁻¹(x)=${ans}.`,
+     {type:"inverse",m:v.m,c:v.c,xMin:-6,xMax:6,yMin:-8,yMax:8});
+ });
+
+ const restrictedQuadratics=[
+   {d:1,c:3,ans:"√(x−3)"},
+   {d:2,c:5,ans:"√(2x−5)"},
+   {d:1,c:-2,ans:"√(x+2)"},
+   {d:3,c:1,ans:"√(3x−1)"}
+ ];
+ restrictedQuadratics.forEach(v=>add(topics[3],"Advanced",
+   `Given <span class="math">g(x)=(x²${signedTerm(v.c)})/${v.d}</span> for <span class="math">x≥0</span>, find <span class="math">g⁻¹(x)</span>.`,
+   [v.ans,`±${v.ans}`,`(${v.ans})²`,`1/${v.ans}`],0,
+   "Solve for the original x. Since the original domain is x≥0, take the principal square root."));
+
+ const invDomainRange=[
+   {f:"f(x)=2x+1",fd:"(−∞,∞)",fr:"(−∞,∞)",id:"(−∞,∞)",ir:"(−∞,∞)"},
+   {f:"f(x)=√(x−2)",fd:"[2,∞)",fr:"[0,∞)",id:"[0,∞)",ir:"[2,∞)"},
+   {f:"f(x)=x² for x≥0",fd:"[0,∞)",fr:"[0,∞)",id:"[0,∞)",ir:"[0,∞)"},
+   {f:"f(x)=1/(x−3)",fd:"All real numbers except 3",fr:"All real numbers except 0",id:"All real numbers except 0",ir:"All real numbers except 3"},
+   {f:"f(x)=|x| for x≥0",fd:"[0,∞)",fr:"[0,∞)",id:"[0,∞)",ir:"[0,∞)"}
+ ];
+ invDomainRange.forEach(v=>add(topics[3],"Advanced",
+   `For <span class="math">${v.f}</span>, state the domain and range of <span class="math">f⁻¹</span>.`,
+   [`Domain: ${v.id}; Range: ${v.ir}`,
+    `Domain: ${v.fd}; Range: ${v.fr}`,
+    "Domain: all real numbers; Range: all real numbers",
+    "The inverse does not exist"],0,
+   `The domain of f⁻¹ is the range of f, and the range of f⁻¹ is the domain of f.`));
+
+ const inverseValues=[
+   {f:"f(x)=5x",ask:"f⁻¹(20)",ans:"4"}
+ ];
+ inverseValues.forEach(v=>addShuffled(topics[3],"Intermediate",
+   `Given <span class="math">${v.f}</span>, find <span class="math">${v.ask}</span>.`,
+   v.ans,[String(Number(v.ans)+1),String(Number(v.ans)-1),String(-Number(v.ans))],
+   `First find the inverse function, then substitute the given input.`));
+
+ // Final checks, cleaning, and strict option uniqueness.
+ b.forEach(q=>{
+   q.q=cleanMathText(q.q);
+   q.o=q.o.map(cleanMathText);
+   q.e=cleanMathText(q.e);
+   if(q.graph&&q.graph.label)q.graph.label=cleanMathText(q.graph.label);
+
+   // Preserve the correct answer text before removing duplicates.
+   const correctText=String(q.o[q.a]).trim();
+   const unique=[];
+   for(const option of q.o){
+     const cleaned=String(option).trim();
+     if(!unique.some(x=>x.toLowerCase()===cleaned.toLowerCase()))unique.push(cleaned);
+   }
+
+   const fillers=[
+     "None of these",
+     "All real numbers",
+     "No real value",
+     "Undefined",
+     "The function has no range",
+     "The domain is empty"
+   ];
+   for(const filler of fillers){
+     if(unique.length>=4)break;
+     if(!unique.some(x=>x.toLowerCase()===filler.toLowerCase()))unique.push(filler);
+   }
+
+   q.o=unique.slice(0,4);
+   q.a=q.o.findIndex(x=>x.toLowerCase()===correctText.toLowerCase());
+   if(q.a<0){
+     q.o[0]=correctText;
+     q.a=0;
+   }
+
+   if(q.o.length!==4 || new Set(q.o.map(x=>x.toLowerCase())).size!==4){
+     throw new Error(`Question ${q.id} has invalid or duplicate options: ${JSON.stringify(q.o)}`);
+   }
+ });
+ return b;
+}
+
+const bank=buildBank();
+console.info(`Question bank audit passed: ${bank.length} questions; every question has exactly 4 unique options.`);
+let qs=[];const S={name:"",i:0,score:0,lives:3,correct:0,selected:null,answered:false,time:20,stars:0,totalTime:0,topicCorrect:{}};let timer;let soundOn=true;let audioCtx=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let db=null;
+let cloudEnabled=false;
+try{
+  if(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && !String(window.FIREBASE_CONFIG.apiKey).includes('PASTE_')){
+    firebase.initializeApp(window.FIREBASE_CONFIG);
+    db=firebase.firestore();
+    cloudEnabled=true;
+  }
+}catch(err){console.warn('Firebase unavailable:',err)}
+function updateCloudStatus(){
+  const el=$('cloudStatus');
+  if(!el)return;
+  el.textContent=cloudEnabled?'☁ Cloud connected':'💻 Local demo mode';
+  el.style.color=cloudEnabled?'var(--lime)':'var(--gold)';
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0)}
+function newSession(){S.i=0;S.score=0;S.lives=3;S.correct=0;S.selected=null;S.answered=false;S.stars=0;S.totalTime=0;S.topicCorrect={};topics.forEach(t=>S.topicCorrect[t]=0);const alloc=[4,4,4,3];qs=[];topics.forEach((t,i)=>qs.push(...shuffle(bank.filter(q=>q.topic===t)).slice(0,alloc[i])));qs=shuffle(qs)}
+
+function applauseSound(){
+ if(!soundOn)return;
+ try{
+   audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+   const now=audioCtx.currentTime;
+
+   // Short celebratory chord.
+   [523.25,659.25,783.99,1046.5].forEach((freq,i)=>{
+     const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+     o.type="triangle";o.frequency.value=freq;
+     g.gain.setValueAtTime(0.0001,now+i*0.03);
+     g.gain.exponentialRampToValueAtTime(0.05,now+i*0.03+0.02);
+     g.gain.exponentialRampToValueAtTime(0.0001,now+0.42+i*0.03);
+     o.connect(g);g.connect(audioCtx.destination);
+     o.start(now+i*0.03);o.stop(now+0.48+i*0.03);
+   });
+
+   // Synthetic applause: many short filtered noise bursts.
+   for(let i=0;i<18;i++){
+     const length=Math.floor(audioCtx.sampleRate*0.05);
+     const buffer=audioCtx.createBuffer(1,length,audioCtx.sampleRate);
+     const data=buffer.getChannelData(0);
+     for(let j=0;j<length;j++){
+       const env=1-j/length;
+       data[j]=(Math.random()*2-1)*env;
+     }
+     const source=audioCtx.createBufferSource();
+     const filter=audioCtx.createBiquadFilter();
+     const gain=audioCtx.createGain();
+     source.buffer=buffer;
+     filter.type="bandpass";
+     filter.frequency.value=900+Math.random()*1600;
+     filter.Q.value=0.7;
+     gain.gain.value=0.025+Math.random()*0.018;
+     source.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);
+     source.start(now+0.08+i*0.028+Math.random()*0.025);
+   }
+ }catch{}
+}
+
+function incorrectSound(){
+ if(!soundOn)return;
+ try{
+   audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+   const now=audioCtx.currentTime;
+   const notes=[220,185,147];
+   notes.forEach((freq,i)=>{
+     const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+     o.type="sawtooth";o.frequency.setValueAtTime(freq,now+i*0.11);
+     g.gain.setValueAtTime(0.045,now+i*0.11);
+     g.gain.exponentialRampToValueAtTime(0.0001,now+i*0.11+0.13);
+     o.connect(g);g.connect(audioCtx.destination);
+     o.start(now+i*0.11);o.stop(now+i*0.11+0.14);
+   });
+ }catch{}
+}
+
+function timeoutSound(){
+ if(!soundOn)return;
+ try{
+   audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+   const now=audioCtx.currentTime;
+   [330,330,220].forEach((freq,i)=>{
+     const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+     o.type="square";o.frequency.value=freq;
+     g.gain.setValueAtTime(0.035,now+i*0.16);
+     g.gain.exponentialRampToValueAtTime(0.0001,now+i*0.16+0.10);
+     o.connect(g);g.connect(audioCtx.destination);
+     o.start(now+i*0.16);o.stop(now+i*0.16+0.11);
+   });
+ }catch{}
+}
+
+function startGame(){const n=$('name').value.trim();if(!n)return $('name').focus();S.name=n;newSession();show('game');render();publishLive('active')}
+function render(){
+ clearInterval(timer);
+ S.selected=null;S.answered=false;S.time=20;
+ const q=qs[S.i];
+ $('hp').textContent=S.name;
+ $('hq').textContent=`${S.i+1}/15`;
+ $('hs').textContent=S.score;
+ $('hst').textContent=S.stars+' ⭐';
+ $('hl').textContent='♥ '.repeat(S.lives).trim()||'0';
+ $('ht').textContent='20s';
+ $('ht').classList.remove('low');
+ $('prog').style.width=`${S.i/15*100}%`;
+ $('topic').textContent=q.topic;
+ $('diff').textContent=`Difficulty: ${q.difficulty}`;
+ $('qtext').innerHTML=q.q;
+ $('fb').className='feedback';
+ $('fb').innerHTML='';
+ $('submit').disabled=false;
+ $('submit').removeAttribute('disabled');
+ $('submit').style.display='';
+ $('next').style.display='none';
+ $('opts').innerHTML='';
+
+ q.o.forEach((o,i)=>{
+   const option=document.createElement('button');
+   option.type='button';
+   option.className='option';
+   option.dataset.index=String(i);
+   option.innerHTML=`<div><b>${String.fromCharCode(65+i)}.</b> ${o}</div>`;
+   option.onclick=()=>{
+     if(S.answered)return;
+     S.selected=i;
+     document.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));
+     option.classList.add('selected');
+     $('fb').className='feedback';
+     $('fb').innerHTML='';
+   };
+   $('opts').appendChild(option);
+ });
+
+ try{draw(q.graph)}catch(err){
+   console.error('Graph error:',err);
+   $('canvasWrap').classList.remove('show');
+ }
+ tracker();
+ timer=updateCloudStatus();renderBoard();
+setInterval(()=>{
+   S.time--;
+   $('ht').textContent=S.time+'s';
+   if(S.time<=5)$('ht').classList.add('low');
+   if(S.time<=0){
+     clearInterval(timer);
+     S.selected=-1;
+     submit(true);
+   }
+ },1000)
+}
+
+function submit(timeout=false){
+ if(S.answered||S.selected===null)return;
+ clearInterval(timer);S.answered=true;
+ const q=qs[S.i],els=[...document.querySelectorAll('.option')],ok=S.selected===q.a;
+ const responseTime=20-S.time;
+ S.totalTime+=responseTime;
+ let earnedStars=0;
+ els[q.a].classList.add('correct');
+ if(ok){
+   earnedStars=S.time>=15?3:S.time>=10?2:1;
+   S.stars+=earnedStars;
+   S.score+=100+S.time*3;
+   S.correct++;
+   S.topicCorrect[q.topic]++;
+   try{applauseSound()}catch(err){console.warn(err)}
+ }else{
+   S.lives--;
+   if(S.selected>=0)els[S.selected].classList.add('wrong');
+   try{timeout?timeoutSound():incorrectSound()}catch(err){console.warn(err)}
+ }
+ $('hs').textContent=S.score;
+ $('hst').textContent=S.stars+' ⭐';
+ $('hl').textContent='♥ '.repeat(S.lives).trim()||'0';
+ $('fb').className=`feedback show ${ok?'good':'bad'}`;
+ $('fb').innerHTML=ok
+   ? `<b>Correct ✓ 👏</b><br><b>Speed reward:</b> ${'⭐'.repeat(earnedStars)} (${earnedStars} star${earnedStars===1?'':'s'})<br>${q.e}`
+   : `<b>${timeout?'Time expired ✕':'Incorrect ✕'}</b><br><b>Correct answer:</b> ${q.o[q.a]}<br>${q.e}`;
+ $('submit').style.display='none';
+ $('next').style.display='';
+ $('next').textContent=(S.lives<=0||S.i===14)?'View Results':'Next Question';
+ $('prog').style.width=`${(S.i+1)/15*100}%`;
+ tracker();publishLive('active')
+}
+
+function next(){if(S.lives<=0||S.i===14)return finish();S.i++;render()}function tracker(){$('tracker').innerHTML=topics.map(t=>{const total=qs.filter(q=>q.topic===t).length,attempted=qs.slice(0,S.i+(S.answered?1:0)).filter(q=>q.topic===t).length;return `<div class="mission"><div class="r"><b>${t}</b><span>${S.topicCorrect[t]||0}/${total}</span></div><div class="mini"><i style="width:${attempted/total*100}%"></i></div></div>`}).join('')}
+async function finish(){
+ clearInterval(timer);
+ const pct=Math.round(S.correct/15*100);
+ await save({name:S.name,score:S.score,pct,stars:S.stars,totalTime:S.totalTime,date:new Date().toISOString()});
+ $('pct').textContent=pct+'%';
+ $('fs').textContent=S.score;
+ $('fc').textContent=`${S.correct}/15`;
+ $('fl').textContent=S.lives;
+ $('fq').textContent='100';
+ $('fst').textContent=S.stars+' ⭐';
+ $('ftime').textContent=S.totalTime+'s';
+ $('ring').style.background=`conic-gradient(var(--cyan) 0deg,var(--pink) ${pct*3.6}deg,#12192a ${pct*3.6}deg)`;
+ $('msg').textContent=pct>=80?'Excellent mastery of Chapter 2.':pct>=60?'Good work. Review the explanations for missed questions.':'Review the relevant subtopics and try again.';
+ await renderBoard();await publishLive('finished');show('result')
+}
+
+
+async function getBoard(){
+  if(cloudEnabled){
+    try{
+      const snap=await db.collection('leaderboard')
+        .orderBy('score','desc')
+        .limit(50).get();
+      const rows=snap.docs.map(d=>d.data());
+      rows.sort((a,b)=>(b.score-a.score)||((a.totalTime??9999)-(b.totalTime??9999))||((b.stars??0)-(a.stars??0))||(b.pct-a.pct));
+      return rows.slice(0,10);
+    }catch(err){console.warn('Cloud leaderboard read failed:',err)}
+  }
+  try{return JSON.parse(localStorage.getItem('functionsV8Board')||'[]')}catch{return[]}
+}
+async function save(x){
+  if(cloudEnabled){
+    try{
+      await db.collection('leaderboard').add({...x,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      return;
+    }catch(err){console.warn('Cloud leaderboard write failed:',err)}
+  }
+  const b=await getBoard();
+  b.push(x);
+  b.sort((a,b)=>(b.score-a.score)||((a.totalTime??9999)-(b.totalTime??9999))||((b.stars??0)-(a.stars??0))||(b.pct-a.pct));
+  localStorage.setItem('functionsV8Board',JSON.stringify(b.slice(0,10)));
+}
+async function renderBoard(){
+  const b=await getBoard();
+  $('board').innerHTML=b.length?`<table><thead><tr><th>#</th><th>Player</th><th>Score</th><th>Time</th><th>Stars</th><th>Accuracy</th></tr></thead><tbody>${b.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${r.score}</td><td>${r.totalTime??'-'}s</td><td>${r.stars??0} ⭐</td><td>${r.pct}%</td></tr>`).join('')}</tbody></table>`:'<p class="muted">No scores yet.</p>';
+}
+
+function draw(s){const w=$('canvasWrap'),c=$('graph'),ctx=c.getContext('2d');if(!s){w.classList.remove('show');return}w.classList.add('show');const x0=s.xMin??-6,x1=s.xMax??6,y0=s.yMin??-6,y1=s.yMax??6,p={l:72,r:28,t:34,b:62},W=c.width,H=c.height,pw=W-p.l-p.r,ph=H-p.t-p.b,X=x=>p.l+(x-x0)/(x1-x0)*pw,Y=y=>p.t+(y1-y)/(y1-y0)*ph;ctx.fillStyle='#fbfdff';ctx.fillRect(0,0,W,H);const sx=x1-x0<=10?1:2,sy=y1-y0<=10?1:2;ctx.font='16px Arial';ctx.lineWidth=1;ctx.strokeStyle='#dbe6f2';ctx.fillStyle='#24364d';for(let x=Math.ceil(x0/sx)*sx;x<=x1;x+=sx){ctx.beginPath();ctx.moveTo(X(x),p.t);ctx.lineTo(X(x),H-p.b);ctx.stroke();if(x!==0){ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(fmt(x),X(x),H-p.b+10)}}for(let y=Math.ceil(y0/sy)*sy;y<=y1;y+=sy){ctx.beginPath();ctx.moveTo(p.l,Y(y));ctx.lineTo(W-p.r,Y(y));ctx.stroke();if(y!==0){ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(fmt(y),p.l-10,Y(y))}}const ay=0>=y0&&0<=y1?Y(0):H-p.b,ax=0>=x0&&0<=x1?X(0):p.l;ctx.strokeStyle='#10243c';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(p.l,ay);ctx.lineTo(W-p.r,ay);ctx.moveTo(ax,p.t);ctx.lineTo(ax,H-p.b);ctx.stroke();ctx.fillStyle='#10243c';ctx.font='bold 18px Arial';ctx.fillText('x',W-p.r-12,ay-10);ctx.fillText('y',ax+10,p.t+8);if(0>=x0&&0<=x1&&0>=y0&&0<=y1){ctx.font='15px Arial';ctx.fillText('0',ax+8,ay+18)}const plot=(expr,col,label)=>{const f=new Function('x',`return ${expr}`);ctx.strokeStyle=col;ctx.lineWidth=3.5;ctx.beginPath();let on=false,last=null;for(let i=0;i<=1400;i++){const x=x0+(x1-x0)*i/1400;let y;try{y=f(x)}catch{continue}if(!Number.isFinite(y)){on=false;last=null;continue}const px=X(x),py=Y(y);if(py<p.t-120||py>H-p.b+120||last!==null&&Math.abs(py-last)>ph*.7){on=false;last=null;continue}if(!on){ctx.moveTo(px,py);on=true}else ctx.lineTo(px,py);last=py}ctx.stroke();ctx.fillStyle=col;ctx.font='bold 17px Arial';ctx.textAlign='left';ctx.fillText(label,p.l+12,p.t+12)};const dashV=v=>{ctx.save();ctx.strokeStyle='#e63946';ctx.setLineDash([9,7]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X(v),p.t);ctx.lineTo(X(v),H-p.b);ctx.stroke();ctx.restore()},dashH=v=>{ctx.save();ctx.strokeStyle='#e63946';ctx.setLineDash([9,7]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(p.l,Y(v));ctx.lineTo(W-p.r,Y(v));ctx.stroke();ctx.restore()};if(s.type==='function')plot(s.expr,'#1167d8',s.label);if(s.type==='vertical'){plot(s.expr,'#1167d8',s.label);dashV(1.5)}if(s.type==='horizontal'){plot(s.expr,'#1167d8',s.label);dashH(2)}if(s.type==='asymptote'){plot(s.expr,'#1167d8',s.label);dashV(s.v)}if(s.type==='inverse'){plot(`${s.m}*x+(${s.c})`,'#1167d8','f(x)');plot(`(x-(${s.c}))/${s.m}`,'#e67e22','f⁻¹(x)');plot('x','#7f8c8d','y=x')}}
+$('startBtn').onclick=startGame;$('name').onkeydown=e=>{if(e.key==='Enter')startGame()};$('submit').onclick=function(){
+ if(S.answered)return;
+ if(S.selected===null){
+   $('fb').className='feedback show bad';
+   $('fb').innerHTML='<b>Please select one answer first.</b>';
+   return;
+ }
+ submit(false);
+};$('next').onclick=next;$('again').onclick=()=>{newSession();show('game');render()};$('home').onclick=()=>show('start');
+
+const LIVE_KEY='functionsExplorationV8LiveSessions';
+
+async function getLiveSessions(){
+  if(cloudEnabled){
+    try{
+      const snap=await db.collection('liveSessions').orderBy('updatedAt','desc').get();
+      return snap.docs.map(d=>d.data());
+    }catch(err){console.warn('Cloud live read failed:',err)}
+  }
+  try{return Object.values(JSON.parse(localStorage.getItem(LIVE_KEY)||'{}'))}catch{return[]}
+}
+async function publishLive(status='active'){
+  if(!S||!S.name)return;
+  const answered=Math.min(S.i+(S.answered?1:0),15);
+  const avgTime=answered>0?Math.round(S.totalTime/answered):0;
+  const payload={
+    name:S.name,status,
+    question:Math.min(S.i+1,15),
+    answered,correct:S.correct,score:S.score,
+    stars:S.stars,lives:S.lives,
+    avgTime,totalTime:S.totalTime,
+    updatedAt:Date.now()
+  };
+  if(cloudEnabled){
+    try{
+      const id=S.name.replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,80)||'anonymous';
+      await db.collection('liveSessions').doc(id).set(payload,{merge:true});
+    }catch(err){console.warn('Cloud live write failed:',err)}
+  }else{
+    let all={};
+    try{all=JSON.parse(localStorage.getItem(LIVE_KEY)||'{}')}catch{}
+    all[S.name]=payload;
+    localStorage.setItem(LIVE_KEY,JSON.stringify(all));
+  }
+  if($('teacherModal')?.classList.contains('show'))renderTeacherMonitor();
+}
+async function clearLiveSessions(){
+  if(cloudEnabled){
+    try{
+      const snap=await db.collection('liveSessions').get();
+      const batch=db.batch();
+      snap.docs.forEach(doc=>batch.delete(doc.ref));
+      await batch.commit();
+    }catch(err){console.warn('Cloud clear failed:',err)}
+  }else{
+    localStorage.removeItem(LIVE_KEY);
+  }
+  await renderTeacherMonitor();
+}
+async function renderTeacherMonitor(){
+  const data=(await getLiveSessions()).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  const now=Date.now();
+  const active=data.filter(r=>r.status==='active' && now-(r.updatedAt||0)<120000);
+  const avgScore=data.length?Math.round(data.reduce((s,r)=>s+(r.score||0),0)/data.length):0;
+  const avgAcc=data.length?Math.round(data.reduce((s,r)=>s+((r.correct||0)/Math.max(r.answered||1,1)*100),0)/data.length):0;
+  const avgTime=data.length?Math.round(data.reduce((s,r)=>s+(r.avgTime||0),0)/data.length):0;
+  $('tmParticipants').textContent=data.length;
+  $('tmActive').textContent=active.length;
+  $('tmAvgScore').textContent=avgScore;
+  $('tmAvgAccuracy').textContent=avgAcc+'%';
+  $('tmAvgTime').textContent=avgTime+'s';
+  $('teacherRows').innerHTML=data.length?data.map(r=>{
+    const isActive=r.status==='active' && now-(r.updatedAt||0)<120000;
+    const cls=r.status==='finished'?'live-finished':isActive?'live-active':'live-idle';
+    const label=r.status==='finished'?(r.lives<=0?'Game Over':'Finished'):isActive?'Active':'Idle';
+    const accuracy=r.answered?Math.round((r.correct||0)/r.answered*100):0;
+    const progress=r.status==='finished'&&r.lives<=0?`${r.answered||0}/15`:`${r.question||1}/15`;
+    return `<tr>
+      <td>${esc(r.name)}</td>
+      <td><span class="live-badge ${cls}">${label}</span></td>
+      <td>${progress}</td>
+      <td>${r.correct||0}/${r.answered||0} (${accuracy}%)</td>
+      <td>${r.score||0}</td>
+      <td>${r.stars||0} ⭐</td>
+      <td>${r.lives??3}</td>
+      <td>${r.avgTime||0}s</td>
+      <td>${new Date(r.updatedAt||Date.now()).toLocaleTimeString()}</td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="9" class="note">No live activity yet.</td></tr>';
+}
+async function exportMonitorCSV(){
+  const data=await getLiveSessions();
+  const rows=[["Student","Status","Question","Answered","Correct","Score","Stars","Lives","Average Time (s)","Total Time (s)","Last Update"]];
+  data.forEach(r=>rows.push([r.name,r.status,r.question,r.answered,r.correct,r.score,r.stars,r.lives,r.avgTime,r.totalTime,new Date(r.updatedAt).toISOString()]));
+  const csv=rows.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='functions_exploration_v8_live_performance.csv';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+
+if($('clearBtn'))$('clearBtn').onclick=async function(){
+  const ok=window.confirm('Clear all leaderboard and live-monitor records?');
+  if(!ok)return;
+  if(cloudEnabled){
+    try{
+      for(const collectionName of ['leaderboard','liveSessions']){
+        const snap=await db.collection(collectionName).get();
+        const batch=db.batch();
+        snap.docs.forEach(doc=>batch.delete(doc.ref));
+        await batch.commit();
+      }
+    }catch(err){
+      console.warn(err);
+      alert('Cloud records could not be cleared. Check Firebase permissions.');
+      return;
+    }
+  }else{
+    localStorage.removeItem('functionsV8Board');
+    localStorage.removeItem(LIVE_KEY);
+  }
+  await renderBoard();
+  await renderTeacherMonitor();
+  alert('Leaderboard and live-monitor data have been cleared.');
+};
+if($('full'))$('full').onclick=async function(){
+  try{
+    if(!document.fullscreenElement)await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(err){console.warn(err)}
+};
+if($('teacherBtn'))$('teacherBtn').onclick=function(){
+  $('teacherModal').classList.add('show');
+  $('teacherModal').setAttribute('aria-hidden','false');
+  renderTeacherMonitor();
+};
+if($('closeTeacherBtn'))$('closeTeacherBtn').onclick=function(){
+  $('teacherModal').classList.remove('show');
+  $('teacherModal').setAttribute('aria-hidden','true');
+};
+if($('refreshMonitorBtn'))$('refreshMonitorBtn').onclick=renderTeacherMonitor;
+if($('exportMonitorBtn'))$('exportMonitorBtn').onclick=exportMonitorCSV;
+if($('teacherModal'))$('teacherModal').addEventListener('click',e=>{
+  if(e.target===$('teacherModal'))$('closeTeacherBtn').click();
+});
+setInterval(()=>{
+  if($('teacherModal')?.classList.contains('show'))renderTeacherMonitor();
+},3000);
+
+</script>
+<div id="teacherModal" class="teacher-modal" aria-hidden="true">
+  <div class="teacher-box">
+    <div class="teacher-head">
+      <div>
+        <h2 style="margin:0;color:var(--cyan)">Teacher Live Monitor</h2>
+        <p class="note" style="margin:6px 0 0">Live class activity from connected devices. Data is synchronised through Firebase when cloud mode is configured.</p>
+      </div>
+      <div class="actions" style="margin:0">
+        <button id="refreshMonitorBtn" class="btn">Refresh</button>
+        <button id="exportMonitorBtn" class="btn">Export CSV</button>
+        <button id="closeTeacherBtn" class="btn red">Close</button>
+      </div>
+    </div>
+    <div class="teacher-grid">
+      <div class="teacher-stat"><b id="tmParticipants">0</b><small>Participants</small></div>
+      <div class="teacher-stat"><b id="tmActive">0</b><small>Active now</small></div>
+      <div class="teacher-stat"><b id="tmAvgScore">0</b><small>Average score</small></div>
+      <div class="teacher-stat"><b id="tmAvgAccuracy">0%</b><small>Average accuracy</small></div>
+      <div class="teacher-stat"><b id="tmAvgTime">0s</b><small>Average response time</small></div>
+    </div>
+    <div class="live-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Student</th><th>Status</th><th>Question</th><th>Correct</th><th>Score</th><th>Stars</th><th>Lives</th><th>Avg. time</th><th>Last update</th></tr>
+        </thead>
+        <tbody id="teacherRows"></tbody>
+      </table>
+    </div>
+    <p class="note">Cloud mode: students may use separate phones or laptops. The teacher monitor updates from Firebase. If Firebase is not configured, the app automatically falls back to local demo mode.</p>
+  </div>
+</div>
+
+</body></html>
