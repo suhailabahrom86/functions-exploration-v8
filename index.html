@@ -17,13 +17,13 @@
 .live-idle{background:rgba(255,209,102,.12);color:var(--gold)}
 @media(max-width:760px){.teacher-grid{grid-template-columns:repeat(2,1fr)}}
 
-</style></head><body><main class="app"><div class="top"><div class="logo">Functions <span>Exploration V7.1</span></div><div class="actions" style="margin:0"><span id="cloudStatus" class="chip">Checking cloud…</span><button id="teacherBtn" class="btn">📊 Teacher Monitor</button><button id="full" class="btn">Fullscreen</button></div></div>
+</style></head><body><main class="app"><div class="top"><div class="logo">Functions <span>Exploration V8</span></div><div class="actions" style="margin:0"><span id="cloudStatus" class="chip">Checking cloud…</span><button type="button" id="teacherBtn" class="btn">📊 Teacher Monitor</button><button type="button" id="full" class="btn">Fullscreen</button></div></div>
 <section id="start" class="screen active"><div class="panel hero"><div><span class="chip">MTCF 0114 • Chapter 2 • Syllabus-aligned</span><h1>Explore the <span>Function Grid</span></h1><p>Each participant receives a different random set of 15 questions selected from a bank of 100 questions.</p><div class="features"><div class="feature"><b>100-question bank</b><span class="muted">Balanced across four subtopics</span></div><div class="feature"><b>15 per session</b><span class="muted">Randomised for every attempt</span></div><div class="feature"><b>Clear graphs</b><span class="muted">Numbered x- and y-axes</span></div><div class="feature"><b>Speed Stars</b><span class="muted">Earn up to 3 stars for fast correct answers</span></div></div></div><div class="startcard"><label for="name">Player name / matric number</label><input id="name" type="text" maxlength="30" placeholder="e.g. 2612345"><div class="actions"><button id="startBtn" class="btn primary">Start Mission</button><button id="clearBtn" class="btn">Clear Leaderboard</button></div></div></div></section>
 <section id="game" class="screen"><div class="hud"><div class="hudbox"><small>Player</small><strong id="hp"></strong></div><div class="hudbox"><small>Question</small><strong id="hq"></strong></div><div class="hudbox"><small>Score</small><strong id="hs"></strong></div><div class="hudbox"><small>Stars</small><strong id="hst" style="color:var(--gold)"></strong></div><div class="hudbox"><small>Lives</small><strong id="hl" class="hearts"></strong></div><div class="hudbox"><small>Time</small><strong id="ht" class="timer"></strong></div></div><div class="progresswrap"><div id="prog" class="progress"></div></div><div class="grid"><section class="panel"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span id="topic" class="chip"></span><span id="diff" class="muted"></span></div><div id="qtext" class="question"></div><div id="canvasWrap" class="canvaswrap"><canvas id="graph" width="900" height="480"></canvas></div><div id="opts" class="options"></div><div id="fb" class="feedback"></div><div class="actions"><button id="submit" class="btn primary" disabled>Lock Answer</button><button id="next" class="btn pink" style="display:none">Next Question</button></div></section><aside class="panel"><h3 style="color:var(--cyan);margin-top:0">Mission Tracker</h3><div id="tracker"></div>
     <div class="mission"><b style="color:var(--gold)">Speed Star Guide</b>
-    <div class="muted" style="margin-top:7px">15–20 seconds left: ⭐⭐⭐</div>
-    <div class="muted">10–14 seconds left: ⭐⭐</div>
-    <div class="muted">0–9 seconds left: ⭐</div></div></aside></div></section>
+    <div class="muted" style="margin-top:7px">21–30 seconds left: ⭐⭐⭐</div>
+    <div class="muted">11–20 seconds left: ⭐⭐</div>
+    <div class="muted">0–10 seconds left: ⭐</div></div></aside></div></section>
 <section id="result" class="screen"><div class="resultgrid"><section class="panel"><span class="chip">Mission Complete</span><div id="ring" class="ring"><div><strong id="pct">0%</strong><span class="muted">Accuracy</span></div></div><p id="msg" class="muted" style="text-align:center"></p><div class="stats"><div class="stat"><b id="fs"></b><small>Points</small></div><div class="stat"><b id="fc"></b><small>Correct</small></div><div class="stat"><b id="fl"></b><small>Lives</small></div><div class="stat"><b id="fq"></b><small>Question bank</small></div><div class="stat"><b id="fst"></b><small>Stars</small></div><div class="stat"><b id="ftime"></b><small>Total time</small></div></div><div class="actions"><button id="again" class="btn primary">Play Again</button><button id="home" class="btn">Home</button></div></section><section class="panel"><h3 style="color:var(--cyan);margin-top:0">Class Leaderboard</h3><p class="muted">Ranking: highest score first. For tied scores, the faster total time ranks higher.</p><div id="board"></div></section></div></section></main>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -495,15 +495,15 @@ function timeoutSound(){
 
 function startGame(){const n=$('name').value.trim();if(!n)return $('name').focus();S.name=n;newSession();show('game');render();publishLive('active')}
 function render(){
- clearInterval(timer);
- S.selected=null;S.answered=false;S.time=20;
+ if(timer){clearInterval(timer);timer=null;}
+ S.selected=null;S.answered=false;S.time=30;
  const q=qs[S.i];
  $('hp').textContent=S.name;
  $('hq').textContent=`${S.i+1}/15`;
  $('hs').textContent=S.score;
  $('hst').textContent=S.stars+' ⭐';
  $('hl').textContent='♥ '.repeat(S.lives).trim()||'0';
- $('ht').textContent='20s';
+ $('ht').textContent='30s';
  $('ht').classList.remove('low');
  $('prog').style.width=`${S.i/15*100}%`;
  $('topic').textContent=q.topic;
@@ -539,13 +539,13 @@ function render(){
    $('canvasWrap').classList.remove('show');
  }
  tracker();
- timer=updateCloudStatus();renderBoard();
-setInterval(()=>{
-   S.time--;
+ timer=setInterval(()=>{
+   S.time=Math.max(0,S.time-1);
    $('ht').textContent=S.time+'s';
    if(S.time<=5)$('ht').classList.add('low');
-   if(S.time<=0){
+   if(S.time===0){
      clearInterval(timer);
+     timer=null;
      S.selected=-1;
      submit(true);
    }
@@ -554,14 +554,14 @@ setInterval(()=>{
 
 function submit(timeout=false){
  if(S.answered||S.selected===null)return;
- clearInterval(timer);S.answered=true;
+ if(timer){clearInterval(timer);timer=null;}S.answered=true;
  const q=qs[S.i],els=[...document.querySelectorAll('.option')],ok=S.selected===q.a;
- const responseTime=20-S.time;
+ const responseTime=30-S.time;
  S.totalTime+=responseTime;
  let earnedStars=0;
  els[q.a].classList.add('correct');
  if(ok){
-   earnedStars=S.time>=15?3:S.time>=10?2:1;
+   earnedStars=S.time>=21?3:S.time>=11?2:1;
    S.stars+=earnedStars;
    S.score+=100+S.time*3;
    S.correct++;
@@ -588,7 +588,7 @@ function submit(timeout=false){
 
 function next(){if(S.lives<=0||S.i===14)return finish();S.i++;render()}function tracker(){$('tracker').innerHTML=topics.map(t=>{const total=qs.filter(q=>q.topic===t).length,attempted=qs.slice(0,S.i+(S.answered?1:0)).filter(q=>q.topic===t).length;return `<div class="mission"><div class="r"><b>${t}</b><span>${S.topicCorrect[t]||0}/${total}</span></div><div class="mini"><i style="width:${attempted/total*100}%"></i></div></div>`}).join('')}
 async function finish(){
- clearInterval(timer);
+ if(timer){clearInterval(timer);timer=null;}
  const pct=Math.round(S.correct/15*100);
  await save({name:S.name,score:S.score,pct,stars:S.stars,totalTime:S.totalTime,date:new Date().toISOString()});
  $('pct').textContent=pct+'%';
@@ -727,13 +727,35 @@ async function renderTeacherMonitor(){
 }
 async function exportMonitorCSV(){
   const data=await getLiveSessions();
-  const rows=[["Student","Status","Question","Answered","Correct","Score","Stars","Lives","Average Time (s)","Total Time (s)","Last Update"]];
-  data.forEach(r=>rows.push([r.name,r.status,r.question,r.answered,r.correct,r.score,r.stars,r.lives,r.avgTime,r.totalTime,new Date(r.updatedAt).toISOString()]));
-  const csv=rows.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  if(!data.length){
+    alert('No participant data is available to export yet.');
+    return;
+  }
+  const rows=[[
+    "Student","Status","Question","Answered","Correct","Accuracy (%)",
+    "Score","Stars","Lives","Average Time (s)","Total Time (s)","Last Update"
+  ]];
+  data.forEach(r=>{
+    const accuracy=r.answered?Math.round((r.correct||0)/r.answered*100):0;
+    rows.push([
+      r.name||'',r.status||'',r.question||1,r.answered||0,r.correct||0,accuracy,
+      r.score||0,r.stars||0,r.lives??3,r.avgTime||0,r.totalTime||0,
+      new Date(r.updatedAt||Date.now()).toLocaleString()
+    ]);
+  });
+  const csv='\uFEFF'+rows.map(row=>
+    row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')
+  ).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='functions_exploration_v8_live_performance.csv';a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),500);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`functions_exploration_performance_${new Date().toISOString().slice(0,10)}.csv`;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 if($('clearBtn'))$('clearBtn').onclick=async function(){
@@ -760,26 +782,63 @@ if($('clearBtn'))$('clearBtn').onclick=async function(){
   await renderTeacherMonitor();
   alert('Leaderboard and live-monitor data have been cleared.');
 };
-if($('full'))$('full').onclick=async function(){
-  try{
-    if(!document.fullscreenElement)await document.documentElement.requestFullscreen();
-    else await document.exitFullscreen();
-  }catch(err){console.warn(err)}
-};
-if($('teacherBtn'))$('teacherBtn').onclick=function(){
-  $('teacherModal').classList.add('show');
-  $('teacherModal').setAttribute('aria-hidden','false');
+
+function openTeacherMonitor(){
+  const modal=$('teacherModal');
+  if(!modal)return;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
   renderTeacherMonitor();
-};
-if($('closeTeacherBtn'))$('closeTeacherBtn').onclick=function(){
-  $('teacherModal').classList.remove('show');
-  $('teacherModal').setAttribute('aria-hidden','true');
-};
-if($('refreshMonitorBtn'))$('refreshMonitorBtn').onclick=renderTeacherMonitor;
-if($('exportMonitorBtn'))$('exportMonitorBtn').onclick=exportMonitorCSV;
-if($('teacherModal'))$('teacherModal').addEventListener('click',e=>{
-  if(e.target===$('teacherModal'))$('closeTeacherBtn').click();
+}
+function closeTeacherMonitor(){
+  const modal=$('teacherModal');
+  if(!modal)return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+async function refreshTeacherMonitor(){
+  const btn=$('refreshMonitorBtn');
+  if(btn){btn.disabled=true;btn.textContent='Refreshing…';}
+  try{await renderTeacherMonitor();}
+  finally{if(btn){btn.disabled=false;btn.textContent='Refresh';}}
+}
+async function downloadTeacherCSV(){
+  const btn=$('exportMonitorBtn');
+  if(btn){btn.disabled=true;btn.textContent='Exporting…';}
+  try{await exportMonitorCSV();}
+  catch(err){console.error(err);alert('CSV export failed. Please try again.');}
+  finally{if(btn){btn.disabled=false;btn.textContent='Export CSV';}}
+}
+document.addEventListener('click',e=>{
+  const target=e.target.closest('button');
+  if(!target)return;
+  if(target.id==='teacherBtn'){e.preventDefault();openTeacherMonitor();}
+  else if(target.id==='closeTeacherBtn'){e.preventDefault();closeTeacherMonitor();}
+  else if(target.id==='refreshMonitorBtn'){e.preventDefault();refreshTeacherMonitor();}
+  else if(target.id==='exportMonitorBtn'){e.preventDefault();downloadTeacherCSV();}
+  else if(target.id==='full'){
+    e.preventDefault();
+    (async()=>{try{
+      if(!document.fullscreenElement)await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    }catch(err){console.warn(err)}})();
+  }
 });
+const teacherModal=$('teacherModal');
+if(teacherModal){
+  teacherModal.addEventListener('click',e=>{
+    if(e.target===teacherModal)closeTeacherMonitor();
+  });
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && $('teacherModal')?.classList.contains('show')){
+    closeTeacherMonitor();
+  }
+});
+updateCloudStatus();
+renderBoard();
 setInterval(()=>{
   if($('teacherModal')?.classList.contains('show'))renderTeacherMonitor();
 },3000);
@@ -793,9 +852,9 @@ setInterval(()=>{
         <p class="note" style="margin:6px 0 0">Live class activity from connected devices. Data is synchronised through Firebase when cloud mode is configured.</p>
       </div>
       <div class="actions" style="margin:0">
-        <button id="refreshMonitorBtn" class="btn">Refresh</button>
-        <button id="exportMonitorBtn" class="btn">Export CSV</button>
-        <button id="closeTeacherBtn" class="btn red">Close</button>
+        <button type="button" id="refreshMonitorBtn" class="btn">Refresh</button>
+        <button type="button" id="exportMonitorBtn" class="btn">Export CSV</button>
+        <button type="button" id="closeTeacherBtn" class="btn red">Close</button>
       </div>
     </div>
     <div class="teacher-grid">
